@@ -1,0 +1,16 @@
+{
+  "name": "hhc1",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "Gregor Sajovic",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.19"
+  }
+}
