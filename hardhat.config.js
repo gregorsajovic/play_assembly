@@ -1,10 +1,15 @@
 require("@nomicfoundation/hardhat-toolbox")
 require("dotenv").config()
+require("./tasks/params.js")
+require("./tasks/deployTest.js")
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
     solidity: "0.8.28",
     // Network configuration
+    deployer: {
+        default: 0,
+    },
     networks: {
         hardhatC: {
             url: process.env.RPC_URL_HARDHAT,

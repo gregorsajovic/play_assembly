@@ -1,9 +1,10 @@
 const hre = require("hardhat")
 
-async function main() {
+async function deploy(taskArgs) {
     // Manually access the command-line arguments
     const [networkName, contractName, contractAddress, mappedAddress, slt] =
-        process.argv.slice(2)
+        taskArgs
+    // process.argv.slice(2)
 
     console.log("Network name: ", networkName)
     console.log("Contract name: ", contractName)
@@ -67,7 +68,7 @@ async function main() {
     console.log("Slot returns the value: ", Number(value))
 }
 
-main()
+deploy()
     .then(() => process.exit(0))
     .catch((error) => {
         console.error(error)

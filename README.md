@@ -2,6 +2,12 @@
 
 Purpose of this project is to demonstrate and play around with solidity assembly.
 
+### CLI Argument Parsing - yargs
+
+```shell
+npm install --save-dev yargs
+```
+
 
 
 

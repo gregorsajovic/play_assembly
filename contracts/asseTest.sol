@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-contract A {
+import "hardhat/console.sol";
+
+contract asseTest {
     mapping(address => uint256) values;
 
     function getValue(
@@ -22,6 +24,11 @@ contract A {
     }
 
     function setTestValue(address add, uint256 v) external {
+        console.log(
+            "Value %s will be inserted into mapping at address: %s",
+            v,
+            add
+        );
         values[add] = v;
     }
 }
