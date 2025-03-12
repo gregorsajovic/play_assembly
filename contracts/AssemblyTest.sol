@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
+import "hardhat/console.sol";
+
 contract AssemblyTest {
     mapping(address => uint256) values;
 
@@ -17,6 +19,8 @@ contract AssemblyTest {
         public
         view
         returns (
+            // bytes32 ptr,
+            // bytes32 valSlot,
             bytes32 slot,
             bytes32 addrSlot1,
             bytes32 addrSlot2,
@@ -24,6 +28,7 @@ contract AssemblyTest {
             uint256 addrVal
         )
     {
+        // bytes32 private valSlot;
         assembly {
             let ptr := mload(0x40)
             let valSlot := values.slot
@@ -39,9 +44,9 @@ contract AssemblyTest {
         }
     }
 
-    function testPrintSlot(bytes32 _value) public pure returns (bytes32 value) {
+    function testPrintSlot(bytes32 _value) public view returns (uint256 value) {
         assembly {
-            value := mload(_value)
+            value := sload(_value)
         }
     }
 }

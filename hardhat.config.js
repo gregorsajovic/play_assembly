@@ -22,6 +22,8 @@ module.exports = {
         },
         ganacheB: {
             url: process.env.RPC_URL_GANACHE_B,
+            gas: 100000000, // Increase this as needed
+            gasPrice: 20000000000,
             chainId: Number(process.env.NETWORK_ID_GANACHE_B),
             accounts: [
                 process.env.PK_GANACHE_B ? process.env.PK_GANACHE_B.trim() : "",
