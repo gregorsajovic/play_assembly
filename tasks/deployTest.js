@@ -1,6 +1,5 @@
 const { task, types } = require("hardhat/config")
-const { string } = require("yargs")
-const { deploy } = require("../scripts/callContractFunctions")
+// const deploy = require("../scripts/callContractFunctions")
 
 task("deployTest", "Testing deployment with different parameters")
     .addPositionalParam(
@@ -27,8 +26,24 @@ task("deployTest", "Testing deployment with different parameters")
     )
     .addOptionalParam("nubmerVal", "Numeric value, to be stored into mapping.")
     .addOptionalParam("slotLocation", "Slot location for retriving the value.")
-    .setAction(async (taskArgs) => {
+    .setAction(async (taskArgs, hre) => {
         console.log(taskArgs)
-        await deploy(taskArgs)
-        console.log("Deployment finished.")
+        try {
+            console.log("Starting deployment from task!")
+            hre.run("compile")
+            const deploy = require("../scripts/callContractFunctions")
+            let deployed = await deployScript(
+                hre,
+                taskArgs.mappedAddress,
+                taskArgs.numberVal,
+                taskArgs.slotLocation,
+                taskArgs.networkName,
+                taskArgs.contractName,
+                taskArgs.contractAddress
+            )
+            console.log("Deployment finished successfully: ", deployed)
+        } catch (error) {
+            console.error("Deployment failed: ", error)
+            process.exit(1)
+        }
     })

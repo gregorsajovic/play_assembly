@@ -1,16 +1,24 @@
-const hre = require("hardhat")
+// const hre = require("hardhat")
 
-async function deploy(taskArgs) {
+async function deployScript(hre, taskArgs) {
     // Manually access the command-line arguments
-    const [networkName, contractName, contractAddress, mappedAddress, slt] =
-        taskArgs
-    // process.argv.slice(2)
+    console.log(taskArgs)
+    // const { networkName, contractName, contractAddress, mappedAddress, slt } =
+    const {
+        mappedAddress,
+        nubmerVal,
+        slotLocation,
+        networkName,
+        contractName,
+        contractAddress,
+    } = taskArgs
 
     console.log("Network name: ", networkName)
     console.log("Contract name: ", contractName)
     console.log("Contract address: ", contractAddress)
     console.log("Parameter mapped address: ", mappedAddress)
-    console.log("Read the value at slot: ", slt)
+    console.log("Numerical value: ", nubmerVal)
+    console.log("Read the value at slot: ", slotLocation)
 
     if (!networkName || !contractName || !contractAddress || !mappedAddress) {
         console.log("Error: Missing required arguments.")
@@ -68,9 +76,11 @@ async function deploy(taskArgs) {
     console.log("Slot returns the value: ", Number(value))
 }
 
-deploy()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error(error)
-        process.exit(1)
-    })
+module.exports = { deployScript }
+
+// deploy()
+//     .then(() => process.exit(0))
+//     .catch((error) => {
+//         console.error(error)
+//         process.exit(1)
+//     })
