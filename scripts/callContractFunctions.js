@@ -1,6 +1,8 @@
 // const hre = require("hardhat")
 
-async function deployScript(hre, taskArgs) {
+const { artifacts } = require("hardhat")
+
+async function deployMemAbiEnc(hre, taskArgs) {
     // Manually access the command-line arguments
     console.log(taskArgs)
     // const { networkName, contractName, contractAddress, mappedAddress, slt } =
@@ -71,12 +73,79 @@ async function deployScript(hre, taskArgs) {
         addrLoc,
         Number(addrVal)
     )
-
-    let value = await contract.testPrintSlot(slt)
-    console.log("Slot returns the value: ", Number(value))
 }
 
-module.exports = { deployScript }
+async function getContract(hre, networkName, contractName, contractAddress) {
+    if (!networkName || !contractName || !contractAddress) {
+        console.log("Error: Missing required arguments.")
+        console.log(
+            "Usage: npx hardhat run ./scripts/callContractFunctions.js <networkName> <contractName> <contractAddress> "
+        )
+        process.exit(1)
+    }
+
+    let netPK
+    switch (networkName) {
+        case "ganacheA":
+            netPK = process.env.PK_GANACHE_A
+            break
+        case "ganacheB":
+            netPK = process.env.PK_GANACHE_B
+            break
+        default:
+            netPK = process.env.PK_HARDHAT
+            break
+    }
+
+    const networkConfig = new hre.config.networks[networkName]()
+    const provider = new hre.ethers.JsonRpcProvider(networkConfig.url)
+    const signer = new hre.ethers.Wallet(netPK, provider)
+    const artifacts = await hre.artifact.readArtifact(contractName)
+
+    const contract = hre.ethers.Contract(contractAddress, artifacts.abi, signer)
+
+    return contract
+}
+
+async function deploySaveNumberAtSlot(hre, taskArgs) {
+    const {
+        mappedAddress,
+        nubmerVal,
+        slotLocation,
+        networkName,
+        contractName,
+        contractAddress,
+    } = taskArgs
+
+    const contract = await getContract(
+        hre,
+        networkName,
+        contractName,
+        contractAddress
+    )
+
+    let { savedAddress, sltLoc } = await contract.saveNumberAtSlot(
+        mappedAddress,
+        nubmerVal
+    )
+}
+
+async function deployTestPrintSlot(hre, taskArgs) {
+    const {
+        mappedAddress,
+        nubmerVal,
+        slotLocation,
+        networkName,
+        contractName,
+        contractAddress,
+    } = taskArgs
+}
+
+module.exports = {
+    deployMemAbiEnc,
+    deploySaveNumberAtSlot,
+    deployTestPrintSlot,
+}
 
 // deploy()
 //     .then(() => process.exit(0))

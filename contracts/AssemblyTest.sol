@@ -44,6 +44,22 @@ contract AssemblyTest {
         }
     }
 
+    function saveNumberAtSlot(
+        address _address,
+        uint256 _value
+    ) public returns (address savedAddress, bytes32 sltLoc) {
+        values[_address] = _value;
+        assembly {
+            let ptr := mload(0x40)
+            let valSlot := values.slot
+            mstore(ptr, _address)
+            mstore(add(ptr, 0x20), valSlot)
+            let slot := mload(0x40)
+            sltLoc := keccak256(slot, 0x40)
+        }
+        savedAddress = _address;
+    }
+
     function testPrintSlot(bytes32 _value) public view returns (uint256 value) {
         assembly {
             value := sload(_value)

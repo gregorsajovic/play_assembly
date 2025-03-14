@@ -1,7 +1,11 @@
+require("@nomiclabs/hardhat-ganache")
+require("@nomicfoundation/hardhat-verify")
 require("@nomicfoundation/hardhat-toolbox")
 require("dotenv").config()
 require("./tasks/params.js")
 require("./tasks/deployTest.js")
+
+const GAL_LIMIT = 60000000000
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -12,6 +16,7 @@ module.exports = {
     },
     networks: {
         hardhatC: {
+            gas: GAL_LIMIT,
             url: process.env.RPC_URL_HARDHAT,
             chainId: Number(process.env.NETWORK_ID_HARDHAT),
             accounts: [
@@ -19,6 +24,7 @@ module.exports = {
             ],
         },
         ganacheA: {
+            gas: GAL_LIMIT,
             url: process.env.RPC_URL_GANACHE_A,
             chainId: Number(process.env.NETWORK_ID_GANACHE_A),
             accounts: [
@@ -26,9 +32,8 @@ module.exports = {
             ],
         },
         ganacheB: {
+            gas: GAL_LIMIT,
             url: process.env.RPC_URL_GANACHE_B,
-            gas: 100000000, // Increase this as needed
-            gasPrice: 20000000000,
             chainId: Number(process.env.NETWORK_ID_GANACHE_B),
             accounts: [
                 process.env.PK_GANACHE_B ? process.env.PK_GANACHE_B.trim() : "",
@@ -36,7 +41,23 @@ module.exports = {
         },
     },
     etherscan: {
-        apiKey: process.env.ETHERSCAN_API_KEY,
+        apiKey: {
+            etherscan: process.env.ETHERSCAN_API_KEY,
+            ganacheB: "testkey",
+        },
+        customChains: [
+            {
+                network: "ganacheB",
+                chainId: 1337,
+                urls: {
+                    apiURL: "http://0.0.0.0:3344",
+                    browserURL: "http://0.0.0.0:3344",
+                },
+            },
+        ],
+    },
+    sourcify: {
+        enabled: false,
     },
     gasReporter: {
         enabled: true,
