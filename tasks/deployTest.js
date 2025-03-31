@@ -21,18 +21,36 @@ task("deployTest", "Testing deployment with different parameters")
         types.string
     )
     .addOptionalParam(
-        "mappedAddress",
-        "Mapped address for specific number value."
+        "mappedaddress",
+        "Mapped address for specific number value.",
+        "test",
+        types.string
     )
-    .addOptionalParam("nubmerval", "Numeric value, to be stored into mapping.")
-    .addOptionalParam("slotlocation", "Slot location for retriving the value.")
+    .addOptionalParam(
+        "nubmerval",
+        "Numeric value, to be stored into mapping.",
+        0,
+        types.int
+    )
+    .addOptionalParam(
+        "slotlocation",
+        "Slot location for retriving the value.",
+        "",
+        types.string
+    )
     .setAction(async (taskArgs, hre) => {
         // console.log(taskArgs)
         try {
             console.log("Starting deployment from task!")
             hre.run("compile")
-            const { deployScript } = require("../scripts/callContractFunctions")
-            await deployScript(hre, taskArgs)
+            const {
+                deployMemAbiEnc,
+                deploySaveNumberAtSlot,
+                deployTestPrintSlot,
+            } = require("../scripts/callContractFunctions")
+            // await deployMemAbiEnc(hre, taskArgs)
+            await deploySaveNumberAtSlot(hre, taskArgs)
+            console.log(deploySaveNumberAtSlot)
             console.log("Deployment finished successfully.")
         } catch (error) {
             console.log("A smo tu?")

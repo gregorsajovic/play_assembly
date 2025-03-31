@@ -35,7 +35,6 @@ contract AssemblyTest {
             mstore(ptr, _addr)
             mstore(add(ptr, 0x20), valSlot)
 
-            slot := mload(0x40)
             addrSlot1 := mload(0x80)
             addrSlot2 := mload(0xa0)
 

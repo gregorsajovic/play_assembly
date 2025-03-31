@@ -6,8 +6,8 @@ async function main() {
     const assemblyTest = await AssemblyTest.deploy()
     await assemblyTest.waitForDeployment()
 
-    console.log("Contract deployed on $s network.", await network.config.url)
-    console.log("... at address: $s", await assemblyTest.getAddress())
+    console.log("Contract deployed on %s network.", await network.config.url)
+    console.log("... at address: %s", await assemblyTest.getAddress())
 }
 
 main()

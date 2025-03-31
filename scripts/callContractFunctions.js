@@ -1,15 +1,17 @@
 // const hre = require("hardhat")
 
-const { artifacts } = require("hardhat")
+// const { network } = require("hardhat")
+
+// const { artifacts } = require("hardhat")
 
 async function deployMemAbiEnc(hre, taskArgs) {
     // Manually access the command-line arguments
     console.log(taskArgs)
     // const { networkName, contractName, contractAddress, mappedAddress, slt } =
     const {
-        mappedAddress,
-        nubmerVal,
-        slotLocation,
+        mappedaddress,
+        nubmerval,
+        slotlocation,
         networkName,
         contractName,
         contractAddress,
@@ -18,14 +20,14 @@ async function deployMemAbiEnc(hre, taskArgs) {
     console.log("Network name: ", networkName)
     console.log("Contract name: ", contractName)
     console.log("Contract address: ", contractAddress)
-    console.log("Parameter mapped address: ", mappedAddress)
-    console.log("Numerical value: ", nubmerVal)
-    console.log("Read the value at slot: ", slotLocation)
+    console.log("Parameter mapped address: ", mappedaddress)
+    console.log("Numerical value: ", nubmerval)
+    console.log("Read the value at slot: ", slotlocation)
 
-    if (!networkName || !contractName || !contractAddress || !mappedAddress) {
+    if (!networkName || !contractName || !contractAddress || !mappedaddress) {
         console.log("Error: Missing required arguments.")
         console.log(
-            "Usage: npx hardhat run ./scripts/callContractFunctions.js <networkName> <contractName> <contractAddress> <mappedAddress>"
+            "Usage: npx hardhat run ./scripts/callContractFunctions.js <networkName> <contractName> <contractAddress> <mappedaddress>"
         )
         process.exit(1)
     }
@@ -64,7 +66,7 @@ async function deployMemAbiEnc(hre, taskArgs) {
 
     // Example: Calling a contract function with the provided parameter
     let [slot, addrSlot1, addrSlot2, addrLoc, addrVal] =
-        await contract.memAbiEnc(mappedAddress)
+        await contract.memAbiEnc(mappedaddress)
     console.log(
         "Returned Values:",
         slot,
@@ -83,7 +85,6 @@ async function getContract(hre, networkName, contractName, contractAddress) {
         )
         process.exit(1)
     }
-
     let netPK
     switch (networkName) {
         case "ganacheA":
@@ -96,16 +97,50 @@ async function getContract(hre, networkName, contractName, contractAddress) {
             netPK = process.env.PK_HARDHAT
             break
     }
+    console.log("Creating contract with network: ", netPK)
 
-    const networkConfig = new hre.config.networks[networkName]()
+    let networkConfig
+    try {
+        networkConfig = hre.config.networks[networkName]
+    } catch {
+        console.log(error)
+        process.exit(1)
+    }
+    // console.log("Network config narejen: ", networkConfig)
+    if (!networkConfig) {
+        console.error(
+            `Èrror: Network "${networkName}" not found in hardhatArguments.config.js `
+        )
+        process.exit(1)
+    }
     const provider = new hre.ethers.JsonRpcProvider(networkConfig.url)
     const signer = new hre.ethers.Wallet(netPK, provider)
-    const artifacts = await hre.artifact.readArtifact(contractName)
+    console.log("Contract name: ", contractName)
+    // Retrieve the contract ABI
+    let artifact
+    try {
+        console.log("test A")
+        artifact = await hre.artifacts.readArtifact(contractName)
 
-    const contract = hre.ethers.Contract(contractAddress, artifacts.abi, signer)
+        console.log("test B", artifact)
+    } catch (error) {
+        console.error("Error reading artifact: ", error)
+        console.trace()
+        process.exit(1)
+    }
+    console.log("Za artifactom: ", artifact)
 
+    // Instantiate the contract
+    const contract = new hre.ethers.Contract(
+        contractAddress,
+        artifact.abi,
+        signer
+    )
+    console.log("Contract created: ", contract)
     return contract
 }
+
+async function testArtifact(hre, networkName, contractName, contractAddress) {}
 
 async function deploySaveNumberAtSlot(hre, taskArgs) {
     const {
@@ -123,10 +158,15 @@ async function deploySaveNumberAtSlot(hre, taskArgs) {
         contractName,
         contractAddress
     )
-
+    console.log("Pred klicom pogodbe: ", contract)
     let { savedAddress, sltLoc } = await contract.saveNumberAtSlot(
         mappedAddress,
         nubmerVal
+    )
+    console.log(
+        "Here are address where the value is saved: %s, and the slot location where is saved: %s",
+        savedAddress,
+        sltLoc
     )
 }
 
